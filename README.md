@@ -1,151 +1,94 @@
-# X-Ray Execution Debugger
+# X-Ray — Execution Debugger
 
-X-Ray is a lightweight execution observability system designed to **explain _why_ decisions were made**, not just _what_ happened.
+X-Ray is a lightweight execution debugger designed to make **multi-step, non-deterministic decision systems explainable**. Instead of answering *“what happened?”*, X-Ray focuses on answering **“why did the system make this decision?”**
 
-It captures structured execution steps, inputs, outputs, and evaluations, and renders them in a debugger-style UI optimized for reasoning and traceability.
-
----
-
-## 🎯 Problem Statement
-
-In modern pipelines (retrieval, filtering, scoring, ranking, LLM workflows), debugging is hard because:
-
-- Logs are scattered
-- Decision rationale is lost
-- Failures are opaque
-
-**X-Ray solves this by making decisions first-class data.**
+It models each run as a structured execution composed of ordered steps, where every step captures inputs, outputs, evaluations, and explicit reasoning.
 
 ---
 
-## 🧠 Core Idea
+## Setup Instructions
 
-Each execution is recorded as an ordered sequence of **steps**:
+### Prerequisites
+- Node.js (v18 or later recommended)
+- npm
+- A modern browser
 
-- Step metadata (name, type)
-- Inputs & outputs (structured JSON)
-- Evaluations (pass/fail + reasons)
 
-The frontend renders this as a **timeline debugger**.
-
----
-
-## 🏗️ Architecture
-
-### Backend
-- **Node.js + Express**
-- TypeScript
-- In-memory singleton execution store
-- UUID-based execution IDs
-- Auto-registration of executions on completion
-
-### Frontend
-- **React + Vite**
-- TypeScript
-- Plain CSS (debugger-style UI)
-- Oldest-first execution ordering
-
----
-
-## 📂 Project Structure
-
-```
-
-root/
-│
-├── backend/
-│   ├── api/
-│   ├── demo-pipeline/
-│   ├── store/
-│   ├── xray-sdk/
-│   └── package.json
-│
-├── frontend/
-│   ├── src/
-│   │   ├── components/
-│   │   ├── types/
-│   │   ├── api/
-│   │   ├── App.tsx
-│   │   └── index.css
-│   └── package.json
-│
-└── README.md
-
-````
-
----
-
-## ▶️ How to Run
-
-### Backend
+### Backend Setup
 ```bash
 cd backend
 npm install
 npm run dev
-````
+``` 
 
-Runs on:
-`http://localhost:3000`
+The backend runs on **[http://localhost:3000](http://localhost:3000)**
 
----
+Available endpoints:
+- `POST /run-demo` → triggers a demo execution
+- `GET /executions` → returns all executions
+- `GET /executions/:id` → returns a single execution
 
-### Frontend
 
+### Frontend Setup
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
 
-Runs on:
-`http://localhost:5173`
+The frontend runs on **[http://localhost:5173](http://localhost:5173)**
+
+You can trigger executions either:
+- From the UI using the **Run Demo** button
+- Directly via the backend API
 
 ---
 
-## 🧪 Demo Execution
+## Approach & Design
 
-* Backend exposes a demo endpoint
-* Clicking **“Run Demo”** in UI triggers a new execution
-* Execution auto-appears in sidebar
+### Core Idea
+Traditional logs and traces capture *events*. X-Ray captures **decisions**.
+Each execution is treated as a first-class entity consisting of ordered steps.
+Each step explicitly records:
+- Start and end time
+- Input and output
+- Optional evaluations (pass/fail + reasons)
+- Human-readable reasoning
+This makes it possible to reconstruct *why* a final outcome occurred.
 
----
+### Backend Design
+- Built with **Node.js, Express, and TypeScript**
+- Executions are created via a central `Recorder`
+- Execution completion is auto-registered to prevent accidental data loss
+- Uses an **in-memory singleton store** to preserve execution order and ensure simplicity
+- Designed to be extensible for additional steps such as LLM relevance checks or ranking
 
-## 🔍 What You Can Observe
-
-* Step-by-step execution flow
-* Input/output JSON per step
-* Candidate-level evaluation results
-* Clear failure reasons
-
----
-
-## 🚀 Extensibility
-
-Designed to support future steps such as:
-
-* LLM relevance evaluation
-* Ranking & selection
-* Confidence scoring
-* Human-in-the-loop overrides
-
-Steps are fully pluggable.
-
----
-
-## 🧠 Design Principles
-
-* Reasoning > Metrics
-* Structure > Logs
-* Explainability first
-* Clean, explicit TypeScript models
+### Frontend Design
+- Built with **React + Vite**
+- Debugger-style UI with:
+  * Execution list (chronological)
+  * Step-by-step timeline
+  * Evaluation tables showing pass/fail reasons
+- Minimal styling to prioritize clarity over visual noise
 
 ---
 
-## 📌 Use Cases
-
-* LLM pipelines
-* Search & ranking systems
-* Data validation workflows
-* Decision auditing systems
+## Known Limitations
+These are intentional trade-offs given the scope and time constraints:
+- Executions are stored **in memory** and do not persist across server restarts
+- No authentication or access control
+- No large-scale performance optimizations
+- Demo data is mocked and not connected to real APIs or LLMs
+The focus of this project is **execution modeling and explainability**, not production infrastructure.
 
 ---
+
+## Future Improvements
+With more time, the following extensions would be natural next steps:
+- Persistent storage (database-backed execution store)
+- Advanced querying and filtering across executions and steps
+- Execution comparison and diffing
+- Native support for LLM prompts, responses, and confidence scores
+- Streaming or partial execution visualization for long-running pipelines
+- Role-based access and multi-tenant support
+The current architecture intentionally keeps these additions straightforward.
