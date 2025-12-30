@@ -47,14 +47,14 @@ You can trigger executions either:
 ## Approach & Design
 
 ### Core Idea
-Traditional logs and traces capture *events*. X-Ray captures **decisions**.
-Each execution is treated as a first-class entity consisting of ordered steps.
-Each step explicitly records:
-- Start and end time
-- Input and output
-- Optional evaluations (pass/fail + reasons)
-- Human-readable reasoning
-This makes it possible to reconstruct *why* a final outcome occurred.
+- Traditional logs and traces capture *events*. X-Ray captures **decisions**.
+- Each execution is treated as a first-class entity consisting of ordered steps.
+- Each step explicitly records:
+    * Start and end time
+    * Input and output
+    * Optional evaluations (pass/fail + reasons)
+    * Human-readable reasoning.
+- This makes it possible to reconstruct *why* a final outcome occurred.
 
 ### Backend Design
 - Built with **Node.js, Express, and TypeScript**
@@ -74,21 +74,22 @@ This makes it possible to reconstruct *why* a final outcome occurred.
 ---
 
 ## Known Limitations
-These are intentional trade-offs given the scope and time constraints:
-- Executions are stored **in memory** and do not persist across server restarts
-- No authentication or access control
-- No large-scale performance optimizations
-- Demo data is mocked and not connected to real APIs or LLMs
-The focus of this project is **execution modeling and explainability**, not production infrastructure.
+- These are intentional trade-offs given the scope and time constraints:
+    * Executions are stored **in memory** and do not persist across server restarts
+    * No authentication or access control
+    * No large-scale performance optimizations
+    * Demo data is mocked and not connected to real APIs or LLMs.
+- The focus of this project is **execution modeling and explainability**, not production infrastructure.
 
 ---
 
 ## Future Improvements
-With more time, the following extensions would be natural next steps:
-- Persistent storage (database-backed execution store)
-- Advanced querying and filtering across executions and steps
-- Execution comparison and diffing
-- Native support for LLM prompts, responses, and confidence scores
-- Streaming or partial execution visualization for long-running pipelines
-- Role-based access and multi-tenant support
-The current architecture intentionally keeps these additions straightforward.
+
+- With more time, the following extensions would be natural next steps:
+    * Persistent storage (database-backed execution store)
+    * Advanced querying and filtering across executions and steps
+    * Execution comparison and diffing
+    * Native support for LLM prompts, responses, and confidence scores
+    * Streaming or partial execution visualization for long-running pipelines
+    * Role-based access and multi-tenant support.
+- The current architecture intentionally keeps these additions straightforward.
